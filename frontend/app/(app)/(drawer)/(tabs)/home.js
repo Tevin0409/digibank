@@ -20,7 +20,7 @@ const Home = () => {
       await balance(); // Call the balance function
     };
     fetchBalance();
-  }, []);
+  }, [user?.accountBalance]);
 
   return (
     <View className="dark:bg-gray-900 bg-slate-50 flex-1 pt-14 p-4 gap-4 ">

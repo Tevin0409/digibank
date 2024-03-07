@@ -13,4 +13,16 @@ module.exports = function (app) {
 
   app.post("/api/account/deposit", [authJwt.verifyToken], controller.deposit);
   app.get("/api/account/balance", [authJwt.verifyToken], controller.getBalance);
+  app.post(
+    "/api/account/issue-cheque",
+    [authJwt.verifyToken],
+    controller.issueCheque
+  );
+
+  // Cancel cheque route
+  app.post(
+    "/api/account/cancel-cheque",
+    [authJwt.verifyToken],
+    controller.cancelCheque
+  );
 };
