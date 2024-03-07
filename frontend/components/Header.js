@@ -7,7 +7,10 @@ const Header = () => {
 
   return (
     <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
-      <Text style={{ fontSize: 20, marginBottom: 6, fontWeight: "bold" }}>
+      <Text
+        className="dark:text-white"
+        style={{ fontSize: 20, marginBottom: 6, fontWeight: "bold" }}
+      >
         {user ? `Welcome back ${user.fullName}` : "Welcome"}
       </Text>
       <View
