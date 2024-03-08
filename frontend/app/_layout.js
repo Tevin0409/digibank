@@ -4,6 +4,7 @@ import "@/styles/global.css";
 import { AuthContextProvider, useAuth } from "../context/authContext";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import {
   useFonts,
@@ -44,8 +45,10 @@ export default function RootLayout() {
   return (
     <AuthContextProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar style="dark" />
-        <MainLayout />
+        <SafeAreaProvider>
+          <StatusBar style="inverted" />
+          <MainLayout />
+        </SafeAreaProvider>
       </GestureHandlerRootView>
     </AuthContextProvider>
   );

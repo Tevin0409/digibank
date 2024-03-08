@@ -88,6 +88,35 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const myCheques = async () => {
+    try {
+      const result = await axios.get(`${API_URL}/account/cheques`);
+      return result;
+    } catch (error) {
+      return { error: true, msg: error.response.data.message };
+    }
+  };
+
+  const issueCheque = async (data) => {
+    try {
+      const result = await axios.post(`${API_URL}/account/issue-cheque`, data);
+      return result;
+    } catch (error) {
+      return { error: true, msg: error.response.data.message };
+    }
+  };
+
+  const cancelCheque = async (chequeNumber) => {
+    try {
+      const result = await axios.post(`${API_URL}/account/cancel-cheque`, {
+        chequeNumber,
+      });
+      return result;
+    } catch (error) {
+      return { error: true, msg: error.response.data.message };
+    }
+  };
+
   const changePin = async (data) => {
     try {
       const result = await axios.post(`${API_URL}/auth/change-pin`, data);
@@ -108,7 +137,10 @@ export const AuthContextProvider = ({ children }) => {
   const logout = async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     axios.defaults.headers.common["Authorization"] = "";
-    setIsAuthenticated(undefined);
+    setIsAuthenticated({
+      token: null,
+      authenticated: false,
+    });
   };
 
   const value = {
@@ -120,6 +152,9 @@ export const AuthContextProvider = ({ children }) => {
     balance,
     deposit,
     changePin,
+    myCheques,
+    issueCheque,
+    cancelCheque,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

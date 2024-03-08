@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, Pressable } from "react-native";
+import { View, Text, TextInput, Image, Pressable, Alert } from "react-native";
 import { useAuth } from "@/context/authContext";
 import { useColorScheme } from "nativewind";
 import {
@@ -9,19 +9,23 @@ import {
 import { useRouter } from "expo-router";
 import { colors } from "@/styles/colors";
 import CustomKeyboardView from "../../../components/CustomKeyboardView";
-
+import { MaterialIcons } from "@expo/vector-icons";
 const ChangePinScreen = () => {
   const { changePin, logout } = useAuth();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const [oldPin, setOldPin] = useState("");
   const [newPin, setNewPin] = useState("");
+  const [cNewPin, setCNewPin] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChangePin = async () => {
     if (!oldPin || !newPin) {
       alert("Please enter both old and new pins.");
       return;
+    }
+    if (newPin !== cNewPin) {
+      Alert.alert("Change Pin", "Pins do not match");
     }
     try {
       setLoading(true);
@@ -50,9 +54,17 @@ const ChangePinScreen = () => {
         style={{ paddingTop: hp(8), paddingHorizontal: wp(5) }}
         className="flex-1 gap-8 "
       >
+        <View className="flex-1 flex-row justify-start ">
+          <Pressable
+            onPress={() => router.back()}
+            className="bg-red-600 p-2 rounded-tr-2xl rounded-bl-2xl py-2"
+          >
+            <MaterialIcons name={"menu"} size={25} color={colors.white} />
+          </Pressable>
+        </View>
         <View className="items-center">
           <Image
-            style={{ height: hp(25), width: wp(50) }}
+            style={{ height: hp(18), width: wp(40) }}
             resizeMode="contain"
             source={require("@/assets/images/digi-logo.png")}
           />
@@ -73,15 +85,11 @@ const ChangePinScreen = () => {
           <View className="gap-4">
             <View
               style={{ height: hp(7) }}
-              className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
+              className="flex-row border-2 border-red-500 px-4 bg-neutral-100 items-center rounded-xl"
             >
               <TextInput
                 style={{
                   fontSize: hp(2),
-                  shadowColor: "#171717",
-                  shadowOffset: { width: -2, height: 4 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 3,
                 }}
                 className="flex-1 text-[#181717]"
                 placeholder="Old PIN..."
@@ -95,15 +103,11 @@ const ChangePinScreen = () => {
             </View>
             <View
               style={{ height: hp(7) }}
-              className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
+              className="flex-row border-2 border-red-500 px-4 bg-neutral-100 items-center rounded-xl"
             >
               <TextInput
                 style={{
                   fontSize: hp(2),
-                  shadowColor: "#171717",
-                  shadowOffset: { width: -2, height: 4 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 3,
                 }}
                 className="flex-1 text-[#181717]"
                 placeholder="New PIN..."
@@ -113,6 +117,24 @@ const ChangePinScreen = () => {
                 secureTextEntry={true}
                 value={newPin}
                 onChangeText={(text) => setNewPin(text)}
+              />
+            </View>
+            <View
+              style={{ height: hp(7) }}
+              className="flex-row border-2 border-red-500 px-4 bg-neutral-100 items-center rounded-xl"
+            >
+              <TextInput
+                style={{
+                  fontSize: hp(2),
+                }}
+                className="flex-1 text-[#181717]"
+                placeholder="Confirm New PIN..."
+                placeholderTextColor={"gray"}
+                inputMode="numeric"
+                keyboardType="numbers-and-punctuation"
+                secureTextEntry={true}
+                value={cNewPin}
+                onChangeText={(text) => setCNewPin(text)}
               />
             </View>
           </View>

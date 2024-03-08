@@ -1,6 +1,5 @@
-import { Pressable, View, Switch } from "react-native";
+import { Pressable, View } from "react-native";
 import React, { useEffect } from "react";
-import axios from "axios";
 import { useAuth } from "@/context/authContext";
 import { SearchMenuBar } from "@/components/SearchMenuBar";
 import MenuButton from "@/components/menu-button";
@@ -24,7 +23,6 @@ const Home = () => {
 
   return (
     <View className="dark:bg-gray-900 bg-slate-50 flex-1 pt-14 p-4 gap-4 ">
-      <Switch value={colorScheme == "dark"} onChange={toggleColorScheme} />
       <SearchMenuBar colorScheme={colorScheme}>
         <MenuButton colorScheme={colorScheme} />
         <SearchMenuBar.Field

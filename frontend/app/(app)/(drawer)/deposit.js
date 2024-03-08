@@ -9,6 +9,7 @@ import {
 import { useRouter } from "expo-router";
 import { colors } from "@/styles/colors";
 import CustomKeyboardView from "../../../components/CustomKeyboardView";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const DepositScreen = () => {
   const { deposit } = useAuth();
@@ -26,7 +27,7 @@ const DepositScreen = () => {
       const result = await deposit(parseFloat(amount));
       if (!result.error) {
         alert("Deposit successful!");
-        router.replace("(tabs)/home");
+        router.push("home");
         setAmount(""); // Clear input after successful deposit
       } else {
         alert("Deposit failed. Please try again.");
@@ -35,7 +36,7 @@ const DepositScreen = () => {
       console.error("Error depositing:", error);
       alert("An error occurred while depositing. Please try again later.");
     } finally {
-      router.replace("(tabs)/home");
+      router.push("home");
     }
   };
 
@@ -45,9 +46,17 @@ const DepositScreen = () => {
         style={{ paddingTop: hp(8), paddingHorizontal: wp(5) }}
         className="flex-1 gap-8 "
       >
+        <View className="flex-1 flex-row justify-start ">
+          <Pressable
+            onPress={() => router.back()}
+            className="bg-red-600 p-2 rounded-tr-2xl rounded-bl-2xl py-2"
+          >
+            <MaterialIcons name={"menu"} size={25} color={colors.white} />
+          </Pressable>
+        </View>
         <View className="items-center">
           <Image
-            style={{ height: hp(25), width: wp(50) }}
+            style={{ height: hp(18), width: wp(40) }}
             resizeMode="contain"
             source={require("@/assets/images/digi-logo.png")}
           />
@@ -68,17 +77,13 @@ const DepositScreen = () => {
           <View className="gap-4">
             <View
               style={{ height: hp(7) }}
-              className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
+              className="flex-row border-2 border-red-500 px-4 bg-neutral-100 items-center rounded-xl"
             >
               <TextInput
                 style={{
                   fontSize: hp(2),
-                  shadowColor: "#171717",
-                  shadowOffset: { width: -2, height: 4 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 3,
                 }}
-                className="flex-1 text-[#181717]"
+                className="flex-1 text-[#181717] "
                 placeholder="Amount..."
                 placeholderTextColor={"gray"}
                 inputMode="numeric"

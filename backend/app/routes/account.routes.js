@@ -25,4 +25,9 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     controller.cancelCheque
   );
+  app.get(
+    "/api/account/cheques",
+    [authJwt.verifyToken],
+    controller.getAllCheques
+  );
 };

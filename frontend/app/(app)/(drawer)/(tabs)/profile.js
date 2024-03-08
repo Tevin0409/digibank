@@ -1,10 +1,16 @@
-import React from "react";
-import { View, Text, Pressable, Image } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import BottomSheet from "@/components/BottomSheet";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+import Button from "@/components/Button";
+
+import { View, Text, Pressable, Image, useColorScheme } from "react-native";
 import { useAuth } from "@/context/authContext";
-import { useColorScheme } from "nativewind";
 import { useRouter } from "expo-router";
 import { colors } from "@/styles/colors";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProfileScreen = () => {
   const { user, logout } = useAuth();
@@ -20,12 +26,52 @@ const ProfileScreen = () => {
     router.push("change-pin");
   };
 
+  const insets = useSafeAreaInsets();
+  const bottomSheetRef = useRef(null);
+
+  const [theme, setTheme] = useState(colorScheme);
+  const [themeSwitch, setThemeSwitch] = useState("system");
+
+  useEffect(() => {
+    if (themeSwitch === "system") {
+      setTheme(colorScheme);
+    }
+  }, [colorScheme, themeSwitch]);
+
+  const backgroundColorAnimation = useAnimatedStyle(() => {
+    return {
+      backgroundColor:
+        theme === "dark" ? withTiming("black") : withTiming("white"),
+    };
+  });
+  const backgroundAnimation = useAnimatedStyle(() => {
+    return {
+      backgroundColor:
+        theme === "dark" ? withTiming("#ea3d3d") : withTiming("#22272B"),
+    };
+  });
+
+  const bTextColorAnimation = useAnimatedStyle(() => {
+    return {
+      color: theme === "dark" ? withTiming("white") : withTiming("#F6AEA9"),
+    };
+  });
+  const textColorAnimation = useAnimatedStyle(() => {
+    return {
+      color: theme === "dark" ? withTiming("white") : withTiming("#000"),
+    };
+  });
+
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: colors.white,
-      }}
+    <Animated.View
+      style={[
+        {
+          flex: 1,
+          paddingTop: insets.top,
+          backgroundColor: colors.white,
+        },
+        backgroundColorAnimation,
+      ]}
     >
       <View style={{ width: "100%" }}>
         <Image
@@ -52,68 +98,95 @@ const ProfileScreen = () => {
             marginTop: -90,
           }}
         />
-
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            marginVertical: 8,
-            color: colorScheme === "dark" ? "white" : "black",
-          }}
+        <Animated.Text
+          style={[
+            {
+              fontSize: 24,
+              fontWeight: "bold",
+              marginVertical: 8,
+            },
+            textColorAnimation,
+          ]}
         >
           {user.fullName}
-        </Text>
-      </View>
-      <View style={{ padding: 20 }} className="flex-1 mt-5">
-        <View>
-          <Text
-            style={{
+        </Animated.Text>
+        <Animated.Text
+          style={[
+            {
               fontSize: 18,
               fontWeight: "500",
-              color: colorScheme === "dark" ? "white" : "black",
-            }}
-          >
-            Email: {user.email}
-          </Text>
-          <Text
-            style={{
+            },
+            textColorAnimation,
+          ]}
+        >
+          Email: {user.email}
+        </Animated.Text>
+        <Animated.Text
+          style={[
+            {
               fontSize: 18,
               fontWeight: "500",
-              color: colorScheme === "dark" ? "white" : "black",
-            }}
-          >
-            Account Number: {user.accountNumber}
-          </Text>
-        </View>
-        <View style={{ marginTop: 20 }}>
-          <Pressable
-            onPress={handleChangePin}
-            style={{
-              padding: 10,
-              backgroundColor: colors.orange[500],
-              borderRadius: 8,
-              marginBottom: 10,
-            }}
-          >
-            <Text style={{ color: "white", textAlign: "center", fontSize: 18 }}>
-              Change PIN
-            </Text>
+            },
+            textColorAnimation,
+          ]}
+        >
+          Account Number: {user.accountNumber}
+        </Animated.Text>
+      </View>
+      <View style={{ padding: 20 }}>
+        <View className="gap-3">
+          <Pressable onPress={handleChangePin}>
+            <Animated.View
+              style={[
+                {
+                  padding: 20,
+                  borderRadius: 10,
+                },
+                backgroundAnimation,
+              ]}
+            >
+              <Animated.Text
+                style={[
+                  { textAlign: "center", fontSize: 18 },
+                  bTextColorAnimation,
+                ]}
+              >
+                Change PIN
+              </Animated.Text>
+            </Animated.View>
           </Pressable>
-          <Pressable
-            onPress={handleLogout}
-            style={{
-              padding: 10,
-              backgroundColor: colors.orange[500],
-              borderRadius: 8,
-            }}
-          >
-            <Text style={{ color: "white", textAlign: "center", fontSize: 18 }}>
-              Logout
-            </Text>
+          <Pressable onPress={handleLogout}>
+            <Animated.View
+              style={[
+                {
+                  padding: 20,
+                  borderRadius: 10,
+                },
+                backgroundAnimation,
+              ]}
+            >
+              <Animated.Text
+                style={[
+                  { textAlign: "center", fontSize: 18 },
+                  bTextColorAnimation,
+                ]}
+              >
+                Logout
+              </Animated.Text>
+            </Animated.View>
           </Pressable>
+          <Button bottomSheetRef={bottomSheetRef} theme={theme} />
         </View>
       </View>
-    </SafeAreaView>
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        setTheme={setTheme}
+        theme={theme}
+        setThemeSwitch={setThemeSwitch}
+        themeSwitch={themeSwitch}
+      />
+    </Animated.View>
   );
 };
 

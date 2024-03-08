@@ -32,7 +32,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="stopCheque"
+        name="(stack)"
         options={{
           title: "Cheque Operations",
           iconName: "credit-card-off",

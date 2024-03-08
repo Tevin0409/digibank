@@ -39,7 +39,8 @@ const getBalance = async (req, res) => {
 };
 
 const issueCheque = async (req, res) => {
-  const { payeeName, amount } = req.body;
+  const { payeeName, amount, chequeNumber, issueDate, clearanceDate } =
+    req.body;
   const { user } = req;
   try {
     const account = await Account.findOne({
@@ -55,10 +56,26 @@ const issueCheque = async (req, res) => {
       accountNumber: user.accountNumber,
       payeeName,
       amount,
+      chequeNumber,
+      issueDate,
+      clearanceDate,
     });
     account.balance -= amount;
     await account.save();
     res.status(200).json({ message: "Cheque issued successfully", cheque });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+const getAllCheques = async (req, res) => {
+  const { user } = req;
+  try {
+    const cheques = await Cheque.findAll({
+      where: { accountNumber: user.accountNumber },
+    });
+    res.status(200).json(cheques);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
@@ -85,4 +102,10 @@ const cancelCheque = async (req, res) => {
   }
 };
 
-module.exports = { deposit, getBalance, issueCheque, cancelCheque };
+module.exports = {
+  deposit,
+  getBalance,
+  issueCheque,
+  cancelCheque,
+  getAllCheques,
+};
